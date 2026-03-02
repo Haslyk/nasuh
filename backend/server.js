@@ -6,6 +6,7 @@ const path = require("path");
 const configRoutes = require("./src/routes/configRoutes");
 const authRoutes = require("./src/routes/authRoutes");
 const productRoutes = require("./src/routes/productRoutes");
+const sliderRoutes = require("./src/routes/sliderRoutes");
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api/settings", configRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/sliders", sliderRoutes);
 
 // Error Handling Middleware
 app.use((err, req, res, next) => {
