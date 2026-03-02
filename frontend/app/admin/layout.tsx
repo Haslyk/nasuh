@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { Montserrat } from "next/font/google";
 import {
   LayoutDashboard,
   Package,
@@ -14,6 +15,8 @@ import {
   Menu,
   X,
   ChevronRight,
+  BarChart3,
+  Handshake,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -25,7 +28,14 @@ const MENU_ITEMS = [
   { name: "Ürün Yönetimi", href: "/admin/products", icon: Package },
   { name: "Kurumsal İçerik", href: "/admin/corporate", icon: FileText },
   { name: "Site Ayarları", href: "/admin/settings", icon: Settings },
+  { name: "Referanslar", href: "/admin/partners", icon: Handshake },
+  { name: "İstatistikler", href: "/admin/stats", icon: BarChart3 },
 ];
+
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+});
 
 export default function AdminLayout({
   children,
@@ -47,7 +57,9 @@ export default function AdminLayout({
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex">
+    <div
+      className={`${montserrat.className} min-h-screen bg-slate-50 flex text-slate-900`}
+    >
       {/* --- SIDEBAR (Desktop) --- */}
       <aside
         className={cn(

@@ -9,6 +9,8 @@ const productRoutes = require("./src/routes/productRoutes");
 const sliderRoutes = require("./src/routes/sliderRoutes");
 const corporateRoutes = require("./src/routes/corporateRoutes");
 const categoryRoutes = require("./src/routes/categoryRoutes");
+const statRoutes = require("./src/routes/statRoutes");
+const partnerRoutes = require("./src/routes/partnerRoutes");
 const app = express();
 
 // Middleware
@@ -23,6 +25,8 @@ app.use("/api/products", productRoutes);
 app.use("/api/sliders", sliderRoutes);
 app.use("/api/corporate", corporateRoutes);
 app.use("/api/categories", categoryRoutes);
+app.use("/api/stats", statRoutes);
+app.use("/api/partners", partnerRoutes);
 
 // Error Handling Middleware
 app.use((err, req, res, next) => {

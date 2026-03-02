@@ -1,15 +1,21 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Space_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 import { LayoutWrapper } from "@/components/layout-wrapper";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
+import { Montserrat } from "next/font/google";
+import WhatsappButton from "@/components/whatsapp-button";
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+});
+
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-montserrat",
 });
 
 const spaceMono = Space_Mono({
@@ -53,11 +59,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="tr" className={`${inter.variable} ${spaceMono.variable}`}>
-      <body className="font-sans antialiased">
+    <html lang="tr" className={montserrat.variable}>
+      <body className={`${montserrat.className} antialiased`}>
         <LayoutWrapper>{children}</LayoutWrapper>
         <Toaster position="top-right" />
         <Analytics />
+        <WhatsappButton />
       </body>
     </html>
   );
