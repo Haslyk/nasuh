@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { API_BASE_URL } from "@/lib/constants";
+import { API_BASE_URL, UPLOADS_URL } from "@/lib/constants";
 import { PageHero } from "@/components/page-hero";
 import Image from "next/image";
 import Link from "next/link";
@@ -55,7 +55,7 @@ export default function ProductsPage() {
             if (categoryProducts.length === 0) return null;
 
             return (
-              <div key={category._id} className="mb-20 last:mb-0">
+              <div key={category.slug} className="mb-20 last:mb-0">
                 <div className="flex items-center justify-between border-b border-border pb-4 mb-8">
                   <div>
                     <h2 className="text-3xl font-bold text-foreground">
@@ -78,13 +78,13 @@ export default function ProductsPage() {
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                   {categoryProducts.map((product) => (
                     <Link
-                      key={product._id}
+                      key={product.slug}
                       href={`/products/${category.slug}/${product.slug}`}
                       className="group bg-background border border-border rounded-lg overflow-hidden transition-all hover:shadow-lg"
                     >
                       <div className="relative aspect-video overflow-hidden">
                         <Image
-                          src={product.image || "/placeholder.jpg"}
+                          src={`${UPLOADS_URL}${product.image_url}`}
                           alt={product.name}
                           fill
                           className="object-cover transition-transform group-hover:scale-105"
