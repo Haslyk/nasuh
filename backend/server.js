@@ -1,27 +1,27 @@
 const express = require("express");
-const mysql = require("mysql2");
 const cors = require("cors");
 require("dotenv").config();
 
+const configRoutes = require("./src/routes/configRoutes");
+const authRoutes = require("./src/routes/authRoutes");
+
 const app = express();
+
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-const db = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASS,
-  database: process.env.DB_NAME,
+// Routes
+app.use("/api/settings", configRoutes);
+app.use("/api/auth", authRoutes);
+
+// Error Handling Middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send("Bir şeyler ters gitti!");
 });
 
-db.connect((err) => {
-  if (err) {
-    console.error("MySQL Bağlantı Hatası: " + err.stack);
-    return;
-  }
-  console.log("MySQL Bağlantısı Başarılı.");
-});
-
-app.listen(process.env.PORT, () => {
-  console.log(`Server ${process.env.PORT} portunda çalışıyor.`);
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server ${PORT} portunda çalışıyor.`);
 });

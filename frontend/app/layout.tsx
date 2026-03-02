@@ -3,7 +3,9 @@ import { Inter, Space_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { LayoutWrapper } from "@/components/layout-wrapper";
 import "./globals.css";
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -53,9 +55,8 @@ export default function RootLayout({
   return (
     <html lang="tr" className={`${inter.variable} ${spaceMono.variable}`}>
       <body className="font-sans antialiased">
-        <Header />
-        <main>{children}</main>
-        <Footer />
+        <LayoutWrapper>{children}</LayoutWrapper>
+        <Toaster position="top-right" />
         <Analytics />
       </body>
     </html>
