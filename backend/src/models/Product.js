@@ -2,7 +2,7 @@ const db = require("../config/db");
 
 const Product = {
   getAll: async () => {
-    const [rows] = await db.query("SELECT * FROM products");
+    const [rows] = await db.query("SELECT * FROM products ORDER BY id DESC");
     return rows;
   },
   getById: async (id) => {
@@ -10,7 +10,11 @@ const Product = {
     return rows[0];
   },
   create: async (data) => {
-    const query = `INSERT INTO products (id, slug, category_slug, name, short_description, description, image_url) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+    const query = `
+            INSERT INTO products 
+            (id, slug, category_slug, name, short_description, description, image_url) 
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        `;
     const values = [
       data.id,
       data.slug,
@@ -25,17 +29,18 @@ const Product = {
   },
   update: async (id, data) => {
     const query = `
-        UPDATE products 
-        SET name = ?, category_slug = ?, short_description = ?, description = ?, image_url = ?, slug = ?
-        WHERE id = ?
-    `;
+            UPDATE products 
+            SET slug = ?, category_slug = ?, name = ?, 
+                short_description = ?, description = ?, image_url = ?
+            WHERE id = ?
+        `;
     const values = [
-      data.name,
+      data.slug,
       data.category_slug,
+      data.name,
       data.short_description,
       data.description,
       data.image_url,
-      data.slug,
       id,
     ];
     const [result] = await db.query(query, values);

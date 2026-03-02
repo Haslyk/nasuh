@@ -1,66 +1,104 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Package, Image as ImageIcon, Settings, FileText } from "lucide-react";
+import { API_BASE_URL } from "@/lib/constants";
+import {
+  Package,
+  FolderTree,
+  Image as ImageIcon,
+  Globe,
+  Users,
+} from "lucide-react";
 
 export default function AdminDashboard() {
-  const stats = [
+  const [stats, setStats] = useState({
+    products: 0,
+    categories: 0,
+    sliders: 0,
+  });
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const [p, c, s] = await Promise.all([
+          fetch(`${API_BASE_URL}/products`).then((res) => res.json()),
+          fetch(`${API_BASE_URL}/categories`).then((res) => res.json()),
+          fetch(`${API_BASE_URL}/sliders`).then((res) => res.json()),
+        ]);
+        setStats({
+          products: p.length,
+          categories: c.length,
+          sliders: s.length,
+        });
+      } catch (e) {
+        console.error("Stats error", e);
+      }
+    };
+    fetchStats();
+  }, []);
+
+  const statCards = [
     {
       title: "Toplam Ürün",
-      value: "12",
+      value: stats.products,
       icon: Package,
       color: "text-blue-600",
+      bg: "bg-blue-50",
     },
     {
-      title: "Aktif Slider",
-      value: "3",
+      title: "Kategoriler",
+      value: stats.categories,
+      icon: FolderTree,
+      color: "text-green-600",
+      bg: "bg-green-50",
+    },
+    {
+      title: "Slider Sayısı",
+      value: stats.sliders,
       icon: ImageIcon,
       color: "text-purple-600",
+      bg: "bg-purple-50",
     },
     {
-      title: "Kurumsal Sayfa",
-      value: "3",
-      icon: FileText,
-      color: "text-green-600",
+      title: "Ziyaretçi",
+      value: "---",
+      icon: Users,
+      color: "text-orange-600",
+      bg: "bg-orange-50",
     },
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold text-[#0F3460]">Dashboard</h1>
+        <h1 className="text-3xl font-bold text-[#0F3460]">Yönetim Paneli</h1>
         <p className="text-slate-500">
-          Hoş geldiniz, site içeriğini buradan yönetebilirsiniz.
+          Hoş geldin Halim, işte sitendeki son durum.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {stats.map((stat, index) => (
-          <Card key={index} className="shadow-sm border-slate-200">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-slate-500 uppercase">
-                {stat.title}
-              </CardTitle>
-              <stat.icon className={`h-5 w-5 ${stat.color}`} />
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold">{stat.value}</div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {statCards.map((item, i) => (
+          <Card
+            key={i}
+            className="border-none shadow-lg rounded-2xl overflow-hidden"
+          >
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-slate-500">
+                    {item.title}
+                  </p>
+                  <h3 className="text-3xl font-bold mt-1">{item.value}</h3>
+                </div>
+                <div className={`p-4 ${item.bg} ${item.color} rounded-2xl`}>
+                  <item.icon size={24} />
+                </div>
+              </div>
             </CardContent>
           </Card>
         ))}
-      </div>
-
-      <div className="bg-white p-8 rounded-xl border border-dashed border-slate-300 flex flex-col items-center justify-center text-center space-y-3">
-        <div className="p-3 bg-slate-100 rounded-full">
-          <Settings className="h-6 w-6 text-slate-400" />
-        </div>
-        <div>
-          <h3 className="font-semibold text-slate-900">Hızlı Başlangıç</h3>
-          <p className="text-sm text-slate-500 max-w-sm">
-            Sol menüyü kullanarak ürünlerinizi güncelleyebilir veya site genel
-            ayarlarını değiştirebilirsiniz.
-          </p>
-        </div>
       </div>
     </div>
   );

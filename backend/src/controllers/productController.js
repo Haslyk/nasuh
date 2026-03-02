@@ -29,24 +29,26 @@ exports.getAllProducts = async (req, res) => {
 // Yeni ürün ekle
 exports.createProduct = async (req, res) => {
   try {
-    const productData = req.body;
-    productData.id = uuidv4();
-    if (req.file) {
-      productData.image_url = `/uploads/${req.file.filename}`;
-    }
-    productData.slug = productData.name
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/(^-|-$)+/g, "");
-    await Product.create(productData);
-    res.status(201).json({ message: "Ürün başarıyla eklendi" });
-  } catch (error) {
-    console.error("❌ Ürün Ekleme Hatası:", error); // Terminalde hatayı görmek için
-    res.status(500).json({
-      message: "Ürün eklenirken hata oluştu",
-      error: error.message, // Hatayı frontend'e gönder
-      sqlMessage: error.sqlMessage, // Eğer SQL hatasıysa detayı
+    const { name, category_slug, short_description, description } = req.body;
+    const id = uuidv4();
+    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+
+    const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
+
+    await Product.create({
+      id,
+      slug,
+      category_slug,
+      name,
+      short_description,
+      description,
+      image_url: imageUrl,
     });
+
+    res.status(201).json({ message: "Ürün eklendi" });
+  } catch (error) {
+    console.error("Hata detayı:", error);
+    res.status(500).json({ message: "Hata oluştu", error: error.message });
   }
 };
 

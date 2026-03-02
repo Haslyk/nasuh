@@ -34,11 +34,19 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Trash2, Edit3, Loader2, UploadCloud } from "lucide-react";
+import {
+  Plus,
+  Trash2,
+  Edit3,
+  Loader2,
+  UploadCloud,
+  FolderTree,
+} from "lucide-react";
 import { toast } from "sonner";
 
 export default function ProductsPage() {
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState<any[]>([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -49,7 +57,7 @@ export default function ProductsPage() {
 
   const [formData, setFormData] = useState({
     name: "",
-    category_slug: "hydraulic-presses",
+    category_slug: "",
     short_description: "",
     description: "",
   });
@@ -65,8 +73,26 @@ export default function ProductsPage() {
     }
   };
 
+  const fetchCategories = async () => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/categories`);
+      const data = await res.json();
+
+      if (Array.isArray(data)) {
+        setCategories(data);
+      } else {
+        setCategories([]);
+        console.error("Gelen veri dizi değil:", data);
+      }
+    } catch (error) {
+      setCategories([]);
+      toast.error("Kategoriler yüklenemedi.");
+    }
+  };
+
   useEffect(() => {
     fetchProducts();
+    fetchCategories();
   }, []);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -82,7 +108,7 @@ export default function ProductsPage() {
   const resetForm = () => {
     setFormData({
       name: "",
-      category_slug: "hydraulic-presses",
+      category_slug: "",
       short_description: "",
       description: "",
     });
@@ -95,7 +121,7 @@ export default function ProductsPage() {
     setEditingProduct(product);
     setFormData({
       name: product.name,
-      category_slug: product.category_slug,
+      category_slug: product.category_slug || "",
       short_description: product.short_description || "",
       description: product.description || "",
     });
@@ -105,6 +131,9 @@ export default function ProductsPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.category_slug)
+      return toast.error("Lütfen bir kategori seçin.");
+
     setLoading(true);
 
     const data = new FormData();
@@ -149,7 +178,6 @@ export default function ProductsPage() {
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
-      {/* Header Alanı */}
       <div className="flex justify-between items-center bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
@@ -184,7 +212,6 @@ export default function ProductsPage() {
 
             <form onSubmit={handleSubmit} className="p-8 space-y-8">
               <div className="grid grid-cols-12 gap-8">
-                {/* Sol Taraf: Görsel */}
                 <div className="col-span-5 space-y-3">
                   <Label className="text-slate-600 font-semibold">
                     Ürün Görseli
@@ -217,7 +244,6 @@ export default function ProductsPage() {
                   </div>
                 </div>
 
-                {/* Sağ Taraf: Metin Girişleri */}
                 <div className="col-span-7 space-y-5">
                   <div className="space-y-2">
                     <Label className="text-slate-600 font-semibold">
@@ -235,22 +261,38 @@ export default function ProductsPage() {
                   </div>
                   <div className="space-y-2">
                     <Label className="text-slate-600 font-semibold">
-                      Kategori
+                      Kategori Seçimi
                     </Label>
-                    <Input
-                      className="h-11 border-slate-200"
-                      value={formData.category_slug}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          category_slug: e.target.value,
-                        })
-                      }
-                    />
+                    <div className="relative">
+                      <select
+                        className="flex h-11 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
+                        value={formData.category_slug}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            category_slug: e.target.value,
+                          })
+                        }
+                        required
+                      >
+                        <option value="" disabled>
+                          Kategori Seçin...
+                        </option>
+                        {categories.map((cat: any) => (
+                          <option key={cat.id} value={cat.slug}>
+                            {cat.name}
+                          </option>
+                        ))}
+                      </select>
+                      <FolderTree
+                        size={16}
+                        className="absolute right-3 top-3.5 text-slate-400 pointer-events-none"
+                      />
+                    </div>
                   </div>
                   <div className="space-y-2">
                     <Label className="text-slate-600 font-semibold">
-                      Kısa Özet (Alt Başlık)
+                      Kısa Özet
                     </Label>
                     <Input
                       className="h-11 border-slate-200"
@@ -269,7 +311,7 @@ export default function ProductsPage() {
 
               <div className="space-y-2">
                 <Label className="text-slate-600 font-semibold">
-                  Detaylı Açıklama / Teknik Özellikler
+                  Detaylı Açıklama
                 </Label>
                 <Textarea
                   className="min-h-[100px] border-slate-200 resize-none"
@@ -309,11 +351,10 @@ export default function ProductsPage() {
         </Dialog>
       </div>
 
-      {/* Tablo Alanı */}
       <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
         <Table>
           <TableHeader className="bg-slate-50/80">
-            <TableRow className="hover:bg-transparent">
+            <TableRow>
               <TableHead className="w-[100px] text-center font-bold text-slate-700 uppercase text-[11px] tracking-wider">
                 Görsel
               </TableHead>
@@ -334,8 +375,8 @@ export default function ProductsPage() {
                 key={product.id}
                 className="hover:bg-slate-50/40 transition-colors border-b border-slate-50"
               >
-                <TableCell className="p-4">
-                  <div className="w-14 h-14 rounded-xl border border-slate-100 overflow-hidden bg-slate-50 shadow-inner">
+                <TableCell className="p-4 text-center">
+                  <div className="w-14 h-14 rounded-xl border border-slate-100 overflow-hidden bg-slate-50 shadow-inner inline-block">
                     <img
                       src={`${UPLOADS_URL}${product.image_url}`}
                       className="w-full h-full object-cover"
@@ -358,7 +399,11 @@ export default function ProductsPage() {
                     variant="secondary"
                     className="px-3 py-1 rounded-lg bg-blue-50 text-blue-600 border-none font-bold text-[10px] uppercase"
                   >
-                    {product.category_slug}
+                    {categories.find(
+                      (c: any) => c.slug === product.category_slug
+                    )?.name ||
+                      product.category_slug ||
+                      "Kategorisiz"}
                   </Badge>
                 </TableCell>
                 <TableCell className="text-right px-8 p-4">
@@ -387,7 +432,6 @@ export default function ProductsPage() {
         </Table>
       </div>
 
-      {/* Silme Onay Modalı */}
       <AlertDialog
         open={!!deleteId}
         onOpenChange={(v) => {
