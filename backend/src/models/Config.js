@@ -1,16 +1,15 @@
 const db = require("../config/db");
 
 const Config = {
-  // Tüm ayarları getir
   getAll: async () => {
-    const [rows] = await db.query("SELECT * FROM site_config WHERE id = 1");
+    const [rows] = await db.query("SELECT * FROM site_config LIMIT 1");
     return rows[0];
   },
-  // Ayarları güncelle
   update: async (data) => {
     const query = `
             UPDATE site_config 
-            SET company_name = ?, tagline = ?, phone = ?, email = ?, address = ?
+            SET company_name = ?, tagline = ?, phone = ?, email = ?, address = ?, 
+                working_hours = ?, linkedin = ?, instagram = ?, youtube = ?, map_embed_url = ?
             WHERE id = 1
         `;
     const values = [
@@ -19,6 +18,11 @@ const Config = {
       data.phone,
       data.email,
       data.address,
+      data.working_hours,
+      data.linkedin,
+      data.instagram,
+      data.youtube,
+      data.map_embed_url,
     ];
     const [result] = await db.query(query, values);
     return result;
