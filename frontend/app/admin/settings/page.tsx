@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Loader2, Save, Globe, Phone, Share2, MapPin } from "lucide-react";
 import { toast } from "sonner";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function SettingsPage() {
   const [loading, setLoading] = useState(true);
@@ -16,8 +17,8 @@ export default function SettingsPage() {
 
   useEffect(() => {
     fetch(`${API_BASE_URL}/settings`)
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         const sanitized = Object.keys(data).reduce((acc: any, key) => {
           acc[key] = data[key] === null ? "" : data[key];
           return acc;
@@ -36,17 +37,34 @@ export default function SettingsPage() {
         body: JSON.stringify(settings),
       });
       if (res.ok) toast.success("Ayarlar güncellendi.");
-    } finally { setSaving(false); }
+    } finally {
+      setSaving(false);
+    }
   };
 
-  if (loading) return <div className="flex justify-center py-20"><Loader2 className="animate-spin h-10 w-10 text-[#0F3460]" /></div>;
+  if (loading)
+    return (
+      <div className="flex justify-center py-20">
+        <Loader2 className="animate-spin h-10 w-10 text-[#0F3460]" />
+      </div>
+    );
 
   return (
     <div className="max-w-5xl mx-auto space-y-8 pb-10">
       <div className="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-        <h1 className="text-2xl font-bold text-slate-900">Site Yapılandırması</h1>
-        <Button onClick={handleSave} disabled={saving} className="bg-[#0F3460] hover:bg-[#1a4b85] px-10">
-          {saving ? <Loader2 className="animate-spin h-4 w-4" /> : <Save className="mr-2 h-4 w-4" />}
+        <h1 className="text-2xl font-bold text-slate-900">
+          Site Yapılandırması
+        </h1>
+        <Button
+          onClick={handleSave}
+          disabled={saving}
+          className="bg-[#0F3460] hover:bg-[#1a4b85] px-10"
+        >
+          {saving ? (
+            <Loader2 className="animate-spin h-4 w-4" />
+          ) : (
+            <Save className="mr-2 h-4 w-4" />
+          )}
           Değişiklikleri Kaydet
         </Button>
       </div>
@@ -61,16 +79,27 @@ export default function SettingsPage() {
           <CardContent className="p-6 space-y-4">
             <div className="space-y-2">
               <Label>Şirket Adı</Label>
-              <Input value={settings.company_name} onChange={e => setSettings({...settings, company_name: e.target.value})} />
+              <Input
+                value={settings.company_name}
+                onChange={(e) =>
+                  setSettings({ ...settings, company_name: e.target.value })
+                }
+              />
             </div>
             <div className="space-y-2">
               <Label>Slogan</Label>
-              <Input value={settings.tagline} onChange={e => setSettings({...settings, tagline: e.target.value})} />
+              <Input
+                value={settings.tagline}
+                onChange={(e) =>
+                  setSettings({ ...settings, tagline: e.target.value })
+                }
+              />
             </div>
           </CardContent>
         </Card>
 
         {/* İletişim */}
+        {/* İletişim Bilgileri Kartı Güncellemesi */}
         <Card className="border-none shadow-xl rounded-2xl">
           <CardHeader className="flex flex-row items-center gap-3 border-b bg-slate-50/50 rounded-t-2xl">
             <Phone className="text-green-600" size={20} />
@@ -79,12 +108,39 @@ export default function SettingsPage() {
           <CardContent className="p-6 space-y-4">
             <div className="space-y-2">
               <Label>E-Posta</Label>
-              <Input value={settings.email} onChange={e => setSettings({...settings, email: e.target.value})} />
+              <Input
+                value={settings.email}
+                onChange={(e) =>
+                  setSettings({ ...settings, email: e.target.value })
+                }
+              />
             </div>
             <div className="space-y-2">
               <Label>Telefon</Label>
-              <Input value={settings.phone} onChange={e => setSettings({...settings, phone: e.target.value})} />
+              <Input
+                value={settings.phone}
+                onChange={(e) =>
+                  setSettings({ ...settings, phone: e.target.value })
+                }
+              />
             </div>
+          </CardContent>
+        </Card>
+
+        <Card className="md:col-span-2 border-none shadow-xl rounded-2xl">
+          <CardHeader className="flex flex-row items-center gap-3 border-b bg-slate-50/50 rounded-t-2xl">
+            <MapPin className="text-slate-600" size={20} />
+            <CardTitle className="text-lg">İş Yeri Adresi</CardTitle>
+          </CardHeader>
+          <CardContent className="grid grid-cols-1 gap-4">
+            <Textarea
+              value={settings.address}
+              onChange={(e) =>
+                setSettings({ ...settings, address: e.target.value })
+              }
+              placeholder="Şirket merkez adresini giriniz..."
+              className="resize-none w-full"
+            />
           </CardContent>
         </Card>
 
@@ -97,15 +153,30 @@ export default function SettingsPage() {
           <CardContent className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="space-y-2">
               <Label>Instagram URL</Label>
-              <Input value={settings.instagram} onChange={e => setSettings({...settings, instagram: e.target.value})} />
+              <Input
+                value={settings.instagram}
+                onChange={(e) =>
+                  setSettings({ ...settings, instagram: e.target.value })
+                }
+              />
             </div>
             <div className="space-y-2">
               <Label>LinkedIn URL</Label>
-              <Input value={settings.linkedin} onChange={e => setSettings({...settings, linkedin: e.target.value})} />
+              <Input
+                value={settings.linkedin}
+                onChange={(e) =>
+                  setSettings({ ...settings, linkedin: e.target.value })
+                }
+              />
             </div>
             <div className="space-y-2">
               <Label>YouTube URL</Label>
-              <Input value={settings.youtube} onChange={e => setSettings({...settings, youtube: e.target.value})} />
+              <Input
+                value={settings.youtube}
+                onChange={(e) =>
+                  setSettings({ ...settings, youtube: e.target.value })
+                }
+              />
             </div>
           </CardContent>
         </Card>

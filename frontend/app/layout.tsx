@@ -7,21 +7,10 @@ import { Toaster } from "@/components/ui/sonner";
 import { Montserrat } from "next/font/google";
 import WhatsappButton from "@/components/whatsapp-button";
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-});
-
 const montserrat = Montserrat({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700", "800", "900"],
   variable: "--font-montserrat",
-});
-
-const spaceMono = Space_Mono({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  variable: "--font-space-mono",
 });
 
 export const metadata: Metadata = {

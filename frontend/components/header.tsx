@@ -1,202 +1,114 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { navigation, siteConfig } from "@/data/content";
-import { Menu, X, ChevronDown, Phone } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { API_BASE_URL } from "@/lib/constants";
+import { Phone, Mail, Menu, X, ChevronDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export function Header() {
-  const [scrolled, setScrolled] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [settings, setSettings] = useState<any>(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  // Close mobile menu on route change (resize)
-  useEffect(() => {
-    const close = () => setMobileOpen(false);
-    window.addEventListener("resize", close);
-    return () => window.removeEventListener("resize", close);
+    fetch(`${API_BASE_URL}/settings`)
+      .then((res) => res.json())
+      .then((data) => setSettings(data))
+      .catch((err) => console.error("Ayarlar çekilemedi", err));
   }, []);
 
   return (
-    <header
-      className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        scrolled
-          ? "bg-card/95 backdrop-blur-md shadow-sm border-b border-border"
-          : "bg-transparent"
-      )}
-    >
-      {/* Top bar */}
-      <div
-        className={cn(
-          "border-b border-border/40 transition-all duration-300 overflow-hidden",
-          scrolled ? "max-h-0 opacity-0" : "max-h-12 opacity-100"
-        )}
-      >
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-2 text-sm">
-          <span className="text-muted-foreground hidden md:inline">
-            {siteConfig.workingHours}
-          </span>
-          <div className="flex items-center gap-4">
+    <header className="w-full relative z-[100]">
+      {/* Üst Bilgi Çubuğu (Top Bar) */}
+      <div className="bg-[#0F3460] text-white py-2 hidden md:block border-b border-white/10">
+        <div className="container mx-auto px-4 flex justify-between items-center text-xs font-medium uppercase tracking-widest">
+          <div className="flex gap-6">
             <a
-              href={`tel:${siteConfig.phone}`}
-              className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors"
+              href={`tel:${settings?.phone}`}
+              className="flex items-center gap-2 hover:text-blue-300 transition-colors"
             >
-              <Phone className="h-3.5 w-3.5" />
-              {siteConfig.phone}
+              <Phone size={14} /> {settings?.phone || "Yükleniyor..."}
             </a>
             <a
-              href={`mailto:${siteConfig.email}`}
-              className="text-muted-foreground hover:text-foreground transition-colors hidden sm:inline"
+              href={`mailto:${settings?.email}`}
+              className="flex items-center gap-2 hover:text-blue-300 transition-colors"
             >
-              {siteConfig.email}
+              <Mail size={14} /> {settings?.email || "Yükleniyor..."}
             </a>
           </div>
+          <div>{settings?.tagline || "Mühendislikte Güven ve Kalite"}</div>
         </div>
       </div>
 
-      {/* Main nav */}
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 group">
-          <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary text-primary-foreground font-bold text-lg transition-transform group-hover:scale-105">
-            G
-          </div>
-          <div className="flex flex-col leading-none">
-            <span className="text-lg font-bold tracking-tight text-foreground">
-              {siteConfig.companyName}
-            </span>
-            <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-              {siteConfig.tagline}
-            </span>
-          </div>
-        </Link>
-
-        {/* Desktop nav */}
-        <nav className="hidden lg:flex items-center gap-1">
-          {navigation.main.map((item) => (
-            <div
-              key={item.label}
-              className="relative"
-              onMouseEnter={() =>
-                item.children && setOpenDropdown(item.label)
-              }
-              onMouseLeave={() => setOpenDropdown(null)}
-            >
-              <Link
-                href={item.href}
-                className={cn(
-                  "flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-md transition-colors",
-                  "text-foreground/80 hover:text-foreground hover:bg-accent"
-                )}
-              >
-                {item.label}
-                {item.children && (
-                  <ChevronDown
-                    className={cn(
-                      "h-3.5 w-3.5 transition-transform",
-                      openDropdown === item.label && "rotate-180"
-                    )}
-                  />
-                )}
-              </Link>
-
-              {/* Dropdown */}
-              {item.children && (
-                <div
-                  className={cn(
-                    "absolute top-full left-0 pt-2 transition-all duration-200",
-                    openDropdown === item.label
-                      ? "opacity-100 translate-y-0 pointer-events-auto"
-                      : "opacity-0 -translate-y-2 pointer-events-none"
-                  )}
-                >
-                  <div className="min-w-56 rounded-lg border border-border bg-card p-2 shadow-lg">
-                    {item.children.map((child) => (
-                      <Link
-                        key={child.label}
-                        href={child.href}
-                        className="block rounded-md px-3 py-2.5 text-sm text-foreground/80 hover:bg-accent hover:text-foreground transition-colors"
-                      >
-                        {child.label}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          ))}
-        </nav>
-
-        {/* CTA + Mobile toggle */}
-        <div className="flex items-center gap-3">
+      {/* Ana Navigasyon */}
+      <nav className="bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-sm sticky top-0">
+        <div className="container mx-auto px-4 h-20 flex items-center justify-between">
+          {/* Logo */}
           <Link
-            href={navigation.cta.href}
-            className="hidden sm:inline-flex items-center gap-2 rounded-md bg-secondary px-5 py-2.5 text-sm font-semibold text-secondary-foreground shadow-sm hover:opacity-90 transition-opacity"
+            href="/"
+            className="text-2xl font-black text-[#0F3460] tracking-tighter uppercase"
           >
-            {navigation.cta.label}
+            {settings?.company_name?.split(" ")[0] || "NASUH"}
+            <span className="text-blue-600">
+              {settings?.company_name?.split(" ")[1] || "MAKİNE"}
+            </span>
           </Link>
+
+          {/* Desktop Menü */}
+          <div className="hidden lg:flex items-center gap-8 font-bold text-sm text-slate-600 uppercase">
+            <Link href="/" className="hover:text-blue-600 transition-colors">
+              Ana Sayfa
+            </Link>
+            <Link
+              href="/products"
+              className="hover:text-blue-600 transition-colors"
+            >
+              Ürünler
+            </Link>
+            <Link
+              href="/corporate/about"
+              className="hover:text-blue-600 transition-colors"
+            >
+              Kurumsal
+            </Link>
+            <Link
+              href="/contact"
+              className="hover:text-blue-600 transition-colors"
+            >
+              İletişim
+            </Link>
+            <Button className="bg-[#0F3460] hover:bg-blue-700 text-white rounded-full px-6 shadow-lg shadow-blue-900/20">
+              Teklif Alın
+            </Button>
+          </div>
+
+          {/* Mobil Menü Butonu */}
           <button
-            type="button"
-            onClick={() => setMobileOpen(!mobileOpen)}
-            className="lg:hidden flex items-center justify-center h-10 w-10 rounded-md hover:bg-accent transition-colors"
-            aria-label="Toggle menu"
+            className="lg:hidden p-2 text-slate-800"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
-            {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
         </div>
-      </div>
 
-      {/* Mobile menu */}
-      <div
-        className={cn(
-          "lg:hidden overflow-hidden transition-all duration-300 bg-card border-t border-border",
-          mobileOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
+        {/* Mobil Menü Paneli */}
+        {isMenuOpen && (
+          <div className="lg:hidden absolute top-20 left-0 right-0 bg-white border-b border-slate-200 p-6 flex flex-col gap-4 shadow-2xl font-bold animate-in slide-in-from-top duration-300">
+            <Link href="/" onClick={() => setIsMenuOpen(false)}>
+              Ana Sayfa
+            </Link>
+            <Link href="/products" onClick={() => setIsMenuOpen(false)}>
+              Ürünler
+            </Link>
+            <Link href="/corporate/about" onClick={() => setIsMenuOpen(false)}>
+              Kurumsal
+            </Link>
+            <Link href="/contact" onClick={() => setIsMenuOpen(false)}>
+              İletişim
+            </Link>
+          </div>
         )}
-      >
-        <nav className="mx-auto max-w-7xl px-6 py-4 flex flex-col gap-1">
-          {navigation.main.map((item) => (
-            <div key={item.label}>
-              <Link
-                href={item.href}
-                onClick={() => !item.children && setMobileOpen(false)}
-                className="flex items-center justify-between py-3 text-sm font-medium text-foreground/80 hover:text-foreground transition-colors border-b border-border/50"
-              >
-                {item.label}
-                {item.children && <ChevronDown className="h-4 w-4" />}
-              </Link>
-              {item.children && (
-                <div className="pl-4 flex flex-col">
-                  {item.children.map((child) => (
-                    <Link
-                      key={child.label}
-                      href={child.href}
-                      onClick={() => setMobileOpen(false)}
-                      className="py-2.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                    >
-                      {child.label}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-          <Link
-            href={navigation.cta.href}
-            onClick={() => setMobileOpen(false)}
-            className="mt-3 inline-flex items-center justify-center rounded-md bg-secondary px-5 py-2.5 text-sm font-semibold text-secondary-foreground shadow-sm hover:opacity-90 transition-opacity"
-          >
-            {navigation.cta.label}
-          </Link>
-        </nav>
-      </div>
+      </nav>
     </header>
   );
 }
