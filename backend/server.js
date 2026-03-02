@@ -7,6 +7,7 @@ const configRoutes = require("./src/routes/configRoutes");
 const authRoutes = require("./src/routes/authRoutes");
 const productRoutes = require("./src/routes/productRoutes");
 const sliderRoutes = require("./src/routes/sliderRoutes");
+const corporateRoutes = require("./src/routes/corporateRoutes");
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use("/api/settings", configRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/sliders", sliderRoutes);
+app.use("/api/corporate", corporateRoutes);
 
 // Error Handling Middleware
 app.use((err, req, res, next) => {
