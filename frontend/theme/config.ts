@@ -5,15 +5,15 @@
 
 export const theme = {
   colors: {
-    primary: "#0F3460",       // Steel Blue — headers, CTA, accents
-    primaryLight: "#1A4F8B",  // Lighter variant for hovers
-    secondary: "#E94560",     // Industrial Red — highlights, badges
-    dark: "#16213E",          // Deep Navy — footers, overlays
-    neutral: "#F8F9FA",       // Off-white — backgrounds
+    primary: "#0F3460",      
+    primaryLight: "#1A4F8B", 
+    secondary: "#E94560",     
+    dark: "#16213E",          
+    neutral: "#F8F9FA",       
     white: "#FFFFFF",
-    text: "#1E293B",          // Body text
-    textMuted: "#64748B",     // Muted text
-    border: "#E2E8F0",        // Borders
+    text: "#1E293B",          
+    textMuted: "#64748B",    
+    border: "#E2E8F0",       
   },
   fonts: {
     heading: "var(--font-inter)",

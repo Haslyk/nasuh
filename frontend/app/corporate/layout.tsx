@@ -5,7 +5,7 @@ import { navigation } from "@/data/content";
 export const metadata: Metadata = {
   title: "Kurumsal",
   description:
-    "GuneyMak hakkinda bilgi edinin - tarihimiz, vizyonumuz, misyonumuz ve endustriyel makine uretimindeki kaliteye olan bagliligimiz.",
+    "Nasuh Ambalaj & Kağıt hakkinda bilgi edinin - tarihimiz, vizyonumuz, misyonumuz ve endustriyel makine uretimindeki kaliteye olan bagliligimiz.",
 };
 
 const corporateLinks = navigation.main.find(

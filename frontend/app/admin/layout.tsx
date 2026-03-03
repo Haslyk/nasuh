@@ -134,7 +134,7 @@ export default function AdminLayout({
 
           <div className="flex items-center gap-4">
             <div className="text-right hidden sm:block">
-              <p className="text-sm font-bold text-slate-900">Halim</p>
+              <p className="text-sm font-bold text-slate-900">Admin</p>
               <p className="text-[10px] font-medium text-slate-500 uppercase tracking-widest">
                 Sistem Yöneticisi
               </p>

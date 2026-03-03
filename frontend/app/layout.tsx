@@ -15,8 +15,8 @@ const montserrat = Montserrat({
 
 export const metadata: Metadata = {
   title: {
-    default: "GuneyMak | Hassas Muhendislik Cozumleri",
-    template: "%s | GuneyMak",
+    default: "Nasuh Ambalaj & Kağıt",
+    template: "%s | Nasuh Ambalaj & Kağıt",
   },
   description:
     "Endustriyel makine uretiminde lider — hidrolik presler, CNC tezgahlar, konveyor sistemleri ve daha fazlasi. 1987'den bu yana 40'tan fazla ulkeye ihracat.",
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "tr_TR",
-    siteName: "GuneyMak",
+    siteName: "Nasuh Ambalaj & Kağıt",
   },
 };
 

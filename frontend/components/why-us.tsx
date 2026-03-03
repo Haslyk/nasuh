@@ -46,7 +46,7 @@ export function WhyUsSection() {
         <SectionHeader
           label="Neden Biz"
           title="Guvene Dayali, Hassasiyetle Yonlendirilen"
-          description="Otuz yildan fazla suredir sanayi liderleri, en kritik uretim ihtiyaclari icin GuneyMak'a guveniyor."
+          description="Otuz yildan fazla suredir sanayi liderleri, en kritik uretim ihtiyaclari icin Nasuh Ambalaj'a guveniyor."
         />
 
         <div className="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">

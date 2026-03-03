@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image"; // Image bileşeni eklendi
 import { API_BASE_URL } from "@/lib/constants";
 import {
   Instagram,
@@ -25,7 +26,6 @@ export function Footer() {
 
   if (!settings) return null;
 
-  // Hızlı Menü Linkleri
   const quickLinks = [
     { label: "Hakkımızda", href: "/corporate/about" },
     { label: "Vizyon & Misyon", href: "/corporate/vision" },
@@ -42,15 +42,25 @@ export function Footer() {
     >
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-          {/* 1. Sütun: Kurumsal Kimlik */}
-          <div className="space-y-6">
-            <h2 className="text-2xl font-black uppercase tracking-tighter">
-              {settings.company_name}
-            </h2>
+          {/* 1. Sütun: Logo ve Kurumsal Kimlik */}
+          <div className="space-y-8">
+            {/* LOGO ALANI */}
+            <Link href="/" className="relative flex items-center group">
+              <div className="relative w-48 h-20">
+                <Image
+                  src="/images/logo.png"
+                  alt={settings.company_name || "Logo"}
+                  fill
+                  className="object-contain transition-transform duration-500 group-hover:scale-105"
+                />
+              </div>
+            </Link>
+
             <p className="text-slate-400 text-sm leading-relaxed font-medium">
               {settings.tagline ||
                 "Mühendislik ve teknolojide öncü çözümler sunuyoruz."}
             </p>
+
             <div className="flex gap-4 pt-2">
               {settings.instagram && (
                 <a
@@ -87,7 +97,7 @@ export function Footer() {
 
           {/* 2. Sütun: Hızlı Menü */}
           <div className="space-y-6">
-            <h3 className="text-lg font-bold uppercase tracking-widest text-blue-500">
+            <h3 className="text-lg font-bold uppercase tracking-widest text-blue-500 pt-2">
               Kurumsal
             </h3>
             <ul className="space-y-3">
@@ -110,7 +120,7 @@ export function Footer() {
 
           {/* 3. Sütun: İletişim Bilgileri */}
           <div className="space-y-6 md:col-span-2 lg:col-span-2">
-            <h3 className="text-lg font-bold uppercase tracking-widest text-blue-500">
+            <h3 className="text-lg font-bold uppercase tracking-widest text-blue-500 pt-2">
               Bize Ulaşın
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

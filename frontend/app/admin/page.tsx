@@ -60,13 +60,6 @@ export default function AdminDashboard() {
       color: "text-purple-600",
       bg: "bg-purple-50",
     },
-    {
-      title: "Ziyaretçi",
-      value: "---",
-      icon: Users,
-      color: "text-orange-600",
-      bg: "bg-orange-50",
-    },
   ];
 
   return (
@@ -74,11 +67,11 @@ export default function AdminDashboard() {
       <div>
         <h1 className="text-3xl font-bold text-[#0F3460]">Yönetim Paneli</h1>
         <p className="text-slate-500">
-          Hoş geldin Halim, işte sitendeki son durum.
+          Hoş geldin Admin, işte sitendeki son durum.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {statCards.map((item, i) => (
           <Card
             key={i}

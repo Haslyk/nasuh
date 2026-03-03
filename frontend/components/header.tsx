@@ -6,6 +6,7 @@ import { API_BASE_URL } from "@/lib/constants";
 import { Phone, Mail, Menu, X, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 export function Header() {
   const [settings, setSettings] = useState<any>(null);
@@ -76,14 +77,21 @@ export function Header() {
       >
         <div className="container mx-auto px-4 h-full flex items-center justify-between">
           {/* Logo */}
-          <Link
-            href="/"
-            className="text-2xl font-black text-[#0F3460] tracking-tighter uppercase"
-          >
-            {settings?.company_name?.split(" ")[0] || "NASUH"}
-            <span className="text-blue-600">
-              {settings?.company_name?.split(" ")[1] || "MAKİNE"}
-            </span>
+          <Link href="/" className="relative flex items-center group">
+            <div
+              className={cn(
+                "relative transition-all duration-500",
+                isScrolled ? "w-48 h-10" : "w-40 h-14 md:w-48 md:h-20"
+              )}
+            >
+              <Image
+                src="/images/logo.png"
+                alt={settings?.company_name || "Logo"}
+                fill
+                className="object-contain transition-transform duration-500 group-hover:scale-105"
+                priority
+              />
+            </div>
           </Link>
 
           {/* Desktop Menü */}
