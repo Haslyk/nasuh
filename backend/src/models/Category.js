@@ -23,6 +23,12 @@ const Category = {
     const [result] = await db.query(query, values);
     return result;
   },
+  updateImageUrl: async (slug, imageUrl) => {
+    return await db.query(
+      "UPDATE categories SET image_url = ? WHERE slug = ?",
+      [imageUrl, slug]
+    );
+  },
   delete: async (id) => {
     const [result] = await db.query("DELETE FROM categories WHERE id = ?", [
       id,

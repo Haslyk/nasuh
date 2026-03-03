@@ -26,7 +26,6 @@ export function HeroSlider() {
   const goTo = useCallback(
     (index: number) => {
       if (isAnimating || !slides.length) return;
-
       setIsAnimating(true);
       setCurrent(index);
       setTimeout(() => setIsAnimating(false), 700);
@@ -44,20 +43,17 @@ export function HeroSlider() {
     goTo((current - 1 + slides.length) % slides.length);
   }, [current, slides.length, goTo]);
 
-  // Auto-advance
   useEffect(() => {
     if (slides.length < 2) return;
-
-    const timer = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % slides.length);
-    }, 6000);
-
+    const timer = setInterval(next, 6000);
     return () => clearInterval(timer);
-  }, [slides.length]);
+  }, [slides.length, next]);
+
+  if (slides.length === 0) return null;
 
   return (
     <section className="relative h-screen min-h-[600px] max-h-[900px] overflow-hidden">
-      {/* Slides */}
+      {/* Slides (Background) */}
       {slides.map((slide, i) => (
         <div
           key={slide.id}
@@ -74,22 +70,22 @@ export function HeroSlider() {
             priority={i === 0}
             sizes="100vw"
           />
-          {/* Overlay */}
           <div className="absolute inset-0 bg-foreground/60" />
         </div>
       ))}
 
-      {/* Content */}
-      <div className="relative z-20 flex h-full items-center">
-        <div className="mx-auto w-full max-w-7xl px-6">
+      {/* Content Area (Hizalama Düzenlemesi) */}
+      <div className="relative z-20 h-full container mx-auto px-6">
+        <div className="relative h-full w-full">
+          {/* h-full sayesinde bu kapsayıcı ekranı kaplar, içerisindeki elemanları dikeyde ortalayabiliriz */}
           {slides.map((slide, i) => (
             <div
               key={slide.id}
               className={cn(
-                "absolute transition-all duration-700 max-w-2xl",
+                "absolute left-0 top-3/5 -translate-y-1/2 w-full max-w-2xl transition-all duration-700",
                 i === current
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-8 pointer-events-none"
+                  ? "opacity-100 translate-x-0 visible"
+                  : "opacity-0 -translate-x-8 invisible"
               )}
             >
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-card leading-tight text-balance">
@@ -98,12 +94,14 @@ export function HeroSlider() {
               <p className="mt-4 text-lg md:text-xl text-card/80 max-w-lg leading-relaxed">
                 {slide.subtitle}
               </p>
-              <Link
-                href={slide.button_link}
-                className="mt-8 inline-flex items-center gap-2 rounded-md bg-secondary px-7 py-3.5 text-sm font-semibold text-secondary-foreground shadow-lg hover:opacity-90 transition-opacity"
-              >
-                {slide.button_text}
-              </Link>
+              <div className="mt-8">
+                <Link
+                  href={slide.button_link || "#"}
+                  className="inline-flex items-center gap-2 rounded-md bg-secondary px-7 py-3.5 text-sm font-semibold text-secondary-foreground shadow-lg hover:opacity-90 transition-opacity"
+                >
+                  {slide.button_text}
+                </Link>
+              </div>
             </div>
           ))}
         </div>
@@ -115,14 +113,12 @@ export function HeroSlider() {
           <button
             onClick={prev}
             className="flex h-11 w-11 items-center justify-center rounded-md bg-card/10 backdrop-blur-sm text-card border border-card/20 hover:bg-card/20 transition-colors"
-            aria-label="Onceki slayt"
           >
             <ChevronLeft className="h-5 w-5" />
           </button>
           <button
             onClick={next}
             className="flex h-11 w-11 items-center justify-center rounded-md bg-card/10 backdrop-blur-sm text-card border border-card/20 hover:bg-card/20 transition-colors"
-            aria-label="Sonraki slayt"
           >
             <ChevronRight className="h-5 w-5" />
           </button>
@@ -139,7 +135,6 @@ export function HeroSlider() {
               "h-2 rounded-full transition-all duration-300",
               i === current ? "w-8 bg-card" : "w-2 bg-card/40"
             )}
-            aria-label={`Slayt ${i + 1}'e git`}
           />
         ))}
       </div>

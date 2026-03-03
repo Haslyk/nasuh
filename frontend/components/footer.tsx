@@ -25,6 +25,15 @@ export function Footer() {
 
   if (!settings) return null;
 
+  // Hızlı Menü Linkleri
+  const quickLinks = [
+    { label: "Hakkımızda", href: "/corporate/about" },
+    { label: "Vizyon & Misyon", href: "/corporate/vision" },
+    { label: "Kalite Politikası", href: "/corporate/quality" },
+    { label: "Ürünlerimiz", href: "/products" },
+    { label: "İletişim", href: "/contact" },
+  ];
+
   return (
     <footer
       className={`${
@@ -47,6 +56,7 @@ export function Footer() {
                 <a
                   href={settings.instagram}
                   target="_blank"
+                  rel="noopener noreferrer"
                   className="bg-white/5 p-3 rounded-xl hover:bg-pink-600 transition-all"
                 >
                   <Instagram size={20} />
@@ -56,6 +66,7 @@ export function Footer() {
                 <a
                   href={settings.linkedin}
                   target="_blank"
+                  rel="noopener noreferrer"
                   className="bg-white/5 p-3 rounded-xl hover:bg-blue-600 transition-all"
                 >
                   <Linkedin size={20} />
@@ -65,6 +76,7 @@ export function Footer() {
                 <a
                   href={settings.youtube}
                   target="_blank"
+                  rel="noopener noreferrer"
                   className="bg-white/5 p-3 rounded-xl hover:bg-red-600 transition-all"
                 >
                   <Youtube size={20} />
@@ -79,23 +91,17 @@ export function Footer() {
               Kurumsal
             </h3>
             <ul className="space-y-3">
-              {[
-                "Hakkımızda",
-                "Vizyon & Misyon",
-                "Kalite Politikası",
-                "Ürünlerimiz",
-                "İletişim",
-              ].map((item) => (
-                <li key={item}>
+              {quickLinks.map((item) => (
+                <li key={item.label}>
                   <Link
-                    href="#"
+                    href={item.href}
                     className="text-slate-400 hover:text-white text-sm font-medium flex items-center gap-2 group transition-all"
                   >
                     <ChevronRight
                       size={14}
                       className="group-hover:translate-x-1 transition-transform"
                     />
-                    {item}
+                    {item.label}
                   </Link>
                 </li>
               ))}
@@ -169,10 +175,16 @@ export function Footer() {
             Saklıdır.
           </p>
           <div className="text-slate-500 text-[10px] font-black uppercase tracking-widest flex gap-6">
-            <Link href="#" className="hover:text-white transition-colors">
+            <Link
+              href="/privacy/kvkk"
+              className="hover:text-white transition-colors"
+            >
               KVKK
             </Link>
-            <Link href="#" className="hover:text-white transition-colors">
+            <Link
+              href="/privacy/cookies"
+              className="hover:text-white transition-colors"
+            >
               Çerez Politikası
             </Link>
           </div>

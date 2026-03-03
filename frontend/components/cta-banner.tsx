@@ -14,17 +14,17 @@ export function CtaBanner() {
 
           <div className="relative z-10 flex flex-col items-center text-center">
             <h2 className="text-3xl md:text-4xl font-bold text-primary-foreground text-balance">
-              Uretiminizi Ust Seviyeye Tasimayi Dusunuyor musunuz?
+              Üretiminizi Üst Seviyeye Taşımayı Düşünüyor musunuz?
             </h2>
             <p className="mt-4 max-w-xl text-primary-foreground/80 leading-relaxed">
-              Muhendislik ekibimiz gereksinimlerinizi gorusmek ve size ozel
-              bir cozum sunmak icin hazir. Bugn ucretsiz danismanlik alin.
+              Muhendislik ekibimiz gereksinimlerinizi gorusmek ve size ozel bir
+              cozum sunmak icin hazir. Bugn ucretsiz danismanlik alin.
             </p>
             <Link
               href="/contact?quote=true"
               className="mt-8 inline-flex items-center gap-2 rounded-md bg-secondary px-8 py-3.5 text-sm font-semibold text-secondary-foreground shadow-lg hover:opacity-90 transition-opacity"
             >
-              Teklif Alin
+              Teklif Alın
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>

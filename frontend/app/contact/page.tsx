@@ -1,97 +1,121 @@
 "use client";
 
-import { useState } from "react";
-import { siteConfig, contactFormFields } from "@/data/content";
+import { useEffect, useState } from "react";
 import { PageHero } from "@/components/page-hero";
-import { Phone, Mail, MapPin, Clock, Send, CheckCircle } from "lucide-react";
+import {
+  Phone,
+  Mail,
+  MapPin,
+  Clock,
+  MessageCircle,
+  ExternalLink,
+  Loader2,
+} from "lucide-react";
+import { API_BASE_URL } from "@/lib/constants";
 
 export default function ContactPage() {
-  const [submitted, setSubmitted] = useState(false);
-  const [formData, setFormData] = useState<Record<string, string>>({});
+  const [settings, setSettings] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    // In a real app, this would send data to an API
-    setSubmitted(true);
-  }
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/settings`)
+      .then((res) => res.json())
+      .then((data) => setSettings(data))
+      .catch((err) => console.error("Ayarlar yüklenemedi:", err))
+      .finally(() => setLoading(false));
+  }, []);
 
-  function handleChange(
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  if (loading) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <Loader2 className="animate-spin h-10 w-10 text-blue-600" />
+      </div>
+    );
   }
 
   const contactInfo = [
     {
       icon: Phone,
       label: "Telefon",
-      value: siteConfig.phone,
-      href: `tel:${siteConfig.phone}`,
+      value: settings?.phone,
+      href: `tel:${settings?.phone}`,
+      color: "bg-blue-500/10 text-blue-600",
     },
     {
       icon: Mail,
       label: "E-posta",
-      value: siteConfig.email,
-      href: `mailto:${siteConfig.email}`,
+      value: settings?.email,
+      href: `mailto:${settings?.email}`,
+      color: "bg-red-500/10 text-red-600",
     },
     {
       icon: MapPin,
       label: "Adres",
-      value: siteConfig.address,
-      href: undefined,
+      value: settings?.address,
+      href: null,
+      color: "bg-amber-500/10 text-amber-600",
     },
     {
       icon: Clock,
-      label: "Calisma Saatleri",
-      value: siteConfig.workingHours,
-      href: undefined,
+      label: "Çalışma Saatleri",
+      value: settings?.working_hours || "Hafta İçi: 09:00 - 18:00",
+      href: null,
+      color: "bg-purple-500/10 text-purple-600",
     },
   ];
 
   return (
     <>
       <PageHero
-        title="Iletisim"
-        breadcrumbs={[
-          { label: "Ana Sayfa", href: "/" },
-          { label: "Iletisim" },
-        ]}
+        title="İletişim"
+        breadcrumbs={[{ label: "Ana Sayfa", href: "/" }, { label: "İletişim" }]}
       />
 
-      <section className="py-20 bg-card">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
-            {/* Contact Info */}
-            <div className="lg:col-span-1">
-              <h2 className="text-2xl font-bold text-foreground mb-2">
-                Bize Ulasin
-              </h2>
-              <p className="text-muted-foreground leading-relaxed mb-8">
-                Sorulariniz, teklif talepleriniz veya teknik destek icin
-                bizimle iletisime geciniz.
-              </p>
+      <section className="py-24 bg-slate-50">
+        <div className="container mx-auto px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+            {/* Sol: İletişim Kartları */}
+            <div className="lg:col-span-5 space-y-8">
+              <div className="space-y-4">
+                <h2 className="text-4xl font-black text-slate-900 uppercase tracking-tighter">
+                  Bize Ulaşın
+                </h2>
+                <p className="text-lg text-slate-500 font-medium leading-relaxed">
+                  Sorularınız, teknik destek talepleriniz veya iş birliği için
+                  doğrudan kanallarımızdan bize ulaşabilirsiniz.
+                </p>
+              </div>
 
-              <div className="flex flex-col gap-6">
+              <div className="grid grid-cols-1 gap-4">
                 {contactInfo.map((item) => (
-                  <div key={item.label} className="flex items-start gap-4">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary/10 text-primary flex-shrink-0">
-                      <item.icon className="h-5 w-5" />
+                  <div
+                    key={item.label}
+                    className="flex items-center p-6 bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow group"
+                  >
+                    <div
+                      className={`flex h-14 w-14 items-center justify-center rounded-2xl ${item.color} flex-shrink-0 transition-transform group-hover:scale-110`}
+                    >
+                      <item.icon className="h-6 w-6" />
                     </div>
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">
+                    <div className="ml-6">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">
                         {item.label}
                       </p>
                       {item.href ? (
                         <a
                           href={item.href}
-                          className="text-sm text-foreground hover:text-primary transition-colors"
+                          className="text-lg font-bold text-slate-900 hover:text-blue-600 transition-colors flex items-center gap-2"
                         >
-                          {item.value}
+                          {item.value}{" "}
+                          <ExternalLink
+                            size={14}
+                            className="opacity-0 group-hover:opacity-100"
+                          />
                         </a>
                       ) : (
-                        <p className="text-sm text-foreground">{item.value}</p>
+                        <p className="text-lg font-bold text-slate-900 whitespace-pre-line">
+                          {item.value}
+                        </p>
                       )}
                     </div>
                   </div>
@@ -99,141 +123,78 @@ export default function ContactPage() {
               </div>
             </div>
 
-            {/* Contact Form */}
-            <div className="lg:col-span-2">
-              <div className="rounded-lg border border-border bg-background p-8 md:p-10">
-                {submitted ? (
-                  <div className="flex flex-col items-center justify-center py-16 text-center">
-                    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary mb-6">
-                      <CheckCircle className="h-8 w-8" />
-                    </div>
-                    <h3 className="text-2xl font-bold text-foreground mb-2">
-                      Mesajiniz Alindi
-                    </h3>
-                    <p className="text-muted-foreground max-w-md">
-                      En ksa surede sizinle iletisime gececegiz. Genellikle 1
-                      is gunu icinde geri donus yapiyoruz.
-                    </p>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSubmitted(false);
-                        setFormData({});
-                      }}
-                      className="mt-6 text-sm font-medium text-primary hover:underline"
-                    >
-                      Yeni mesaj gonder
-                    </button>
+            {/* Sağ: WhatsApp Focus Alanı */}
+            <div className="lg:col-span-7 h-full">
+              <div className="relative h-full min-h-[450px] bg-[#0F3460] rounded-[3rem] overflow-hidden flex flex-col items-center justify-center p-12 text-center text-white shadow-2xl shadow-blue-900/20">
+                {/* Background Pattern */}
+                <div
+                  className="absolute inset-0 opacity-10 pointer-events-none"
+                  style={{
+                    backgroundImage: `url("https://www.transparenttextures.com/patterns/carbon-fibre.png")`,
+                  }}
+                ></div>
+
+                <div className="relative z-10 space-y-8 max-w-md">
+                  <div className="inline-flex h-24 w-24 items-center justify-center rounded-full bg-green-500 text-white animate-bounce">
+                    <MessageCircle size={48} fill="currentColor" />
                   </div>
-                ) : (
-                  <>
-                    <h3 className="text-xl font-bold text-foreground mb-6">
-                      Iletisim Formu
+
+                  <div className="space-y-4">
+                    <h3 className="text-3xl md:text-4xl font-black uppercase tracking-tight">
+                      Hızlı WhatsApp Hattı
                     </h3>
-                    <form
-                      onSubmit={handleSubmit}
-                      className="grid grid-cols-1 gap-5 md:grid-cols-2"
-                    >
-                      {contactFormFields.map((field) => {
-                        const isFullWidth =
-                          field.type === "textarea" || field.type === "select";
-                        return (
-                          <div
-                            key={field.name}
-                            className={isFullWidth ? "md:col-span-2" : ""}
-                          >
-                            <label
-                              htmlFor={field.name}
-                              className="block text-sm font-medium text-foreground mb-1.5"
-                            >
-                              {field.label}
-                              {field.required && (
-                                <span className="text-secondary ml-1">*</span>
-                              )}
-                            </label>
+                    <p className="text-blue-100/80 text-lg font-medium">
+                      Form doldurmakla vakit kaybetmeyin. Teknik ekibimizle
+                      doğrudan WhatsApp üzerinden iletişime geçin.
+                    </p>
+                  </div>
 
-                            {field.type === "textarea" ? (
-                              <textarea
-                                id={field.name}
-                                name={field.name}
-                                rows={5}
-                                required={field.required}
-                                value={formData[field.name] ?? ""}
-                                onChange={handleChange}
-                                className="w-full rounded-md border border-input bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring resize-none"
-                                placeholder={`${field.label} giriniz...`}
-                              />
-                            ) : field.type === "select" ? (
-                              <select
-                                id={field.name}
-                                name={field.name}
-                                required={field.required}
-                                value={formData[field.name] ?? ""}
-                                onChange={handleChange}
-                                className="w-full rounded-md border border-input bg-background px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-                              >
-                                <option value="">Seciniz...</option>
-                                {field.options?.map((opt) => (
-                                  <option key={opt} value={opt}>
-                                    {opt}
-                                  </option>
-                                ))}
-                              </select>
-                            ) : (
-                              <input
-                                id={field.name}
-                                name={field.name}
-                                type={field.type}
-                                required={field.required}
-                                value={formData[field.name] ?? ""}
-                                onChange={handleChange}
-                                className="w-full rounded-md border border-input bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-                                placeholder={field.label}
-                              />
-                            )}
-                          </div>
-                        );
-                      })}
+                  <a
+                    href={`https://wa.me/${settings?.phone?.replace(
+                      /\D/g,
+                      ""
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group relative inline-flex items-center gap-4 bg-green-500 hover:bg-green-600 text-white px-10 py-5 rounded-2xl text-xl font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95 shadow-xl shadow-green-500/30"
+                  >
+                    Hemen Mesaj Gönder
+                    <MessageCircle
+                      size={24}
+                      className="group-hover:rotate-12 transition-transform"
+                    />
+                  </a>
 
-                      <div className="md:col-span-2">
-                        <button
-                          type="submit"
-                          className="inline-flex items-center gap-2 rounded-md bg-secondary px-7 py-3 text-sm font-semibold text-secondary-foreground shadow-sm hover:opacity-90 transition-opacity"
-                        >
-                          Mesaj Gonder
-                          <Send className="h-4 w-4" />
-                        </button>
-                      </div>
-                    </form>
-                  </>
-                )}
+                  <p className="text-xs font-bold text-blue-200/50 uppercase tracking-[0.3em]">
+                    Ortalama yanıt süresi: 15 Dakika
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Map */}
-      <section className="bg-background">
-        <div className="mx-auto max-w-7xl px-6 pb-20">
-          <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-4">
-            Konum
-          </h3>
-          <div className="relative aspect-[21/9] overflow-hidden rounded-lg border border-border">
-            <iframe
-              src={siteConfig.mapEmbedUrl}
-              width="100%"
-              height="100%"
-              style={{ border: 0 }}
-              allowFullScreen
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              title="GuneyMak Konum Haritasi"
-              className="absolute inset-0"
-            />
+      {/* Map: Dinamik URL */}
+      {settings?.map_embed_url && (
+        <section className="bg-slate-50 pb-24">
+          <div className="container mx-auto px-6">
+            <div className="relative h-[450px] w-full overflow-hidden rounded-[3rem] border border-slate-200 shadow-inner">
+              <iframe
+                src={settings.map_embed_url}
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Fabrika Konumu"
+                className="grayscale contrast-125 opacity-80 hover:grayscale-0 transition-all duration-700"
+              />
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
     </>
   );
 }

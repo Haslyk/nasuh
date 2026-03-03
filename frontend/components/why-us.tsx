@@ -41,7 +41,7 @@ export function SectionHeader({
 
 export function WhyUsSection() {
   return (
-    <section className="py-24 bg-card">
+    <section className="py-24 bg-card mt-8">
       <div className="mx-auto max-w-7xl px-6">
         <SectionHeader
           label="Neden Biz"

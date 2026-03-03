@@ -2,6 +2,8 @@ const Product = require("../models/Product");
 const multer = require("multer");
 const path = require("path");
 const { v4: uuidv4 } = require("uuid");
+const Category = require("../models/Category");
+const db = require("../config/db");
 
 // Multer Ayarları (Resim nereye ve hangi isimle kaydedilecek?)
 const storage = multer.diskStorage({
@@ -59,6 +61,15 @@ exports.createProduct = async (req, res) => {
       image_url: imageUrl,
     });
 
+    const categoryProducts = await db.query(
+      "SELECT image_url FROM products WHERE category_slug = ?",
+      [category_slug]
+    );
+
+    if (categoryProducts[0].length === 1) {
+      await Category.updateImageUrl(category_slug, imageUrl);
+    }
+
     res.status(201).json({ message: "Ürün eklendi" });
   } catch (error) {
     console.error("Hata detayı:", error);
@@ -77,7 +88,6 @@ exports.updateProduct = async (req, res) => {
 
     const productData = { ...req.body };
 
-    // Yeni resim yüklendiyse onu kullan, yoksa eski resmi koru
     productData.image_url = req.file
       ? `/uploads/${req.file.filename}`
       : existingProduct.image_url;
@@ -88,6 +98,19 @@ exports.updateProduct = async (req, res) => {
       .replace(/(^-|-$)+/g, "");
 
     await Product.update(id, productData);
+
+    const categoryProducts = await db.query(
+      "SELECT * FROM products WHERE category_slug = ?",
+      [productData.category_slug]
+    );
+
+    if (categoryProducts[0].length === 1) {
+      await Category.updateImageUrl(
+        productData.category_slug,
+        productData.image_url
+      );
+    }
+
     res.json({ message: "Ürün başarıyla güncellendi" });
   } catch (error) {
     console.error("Güncelleme Hatası:", error);
@@ -98,7 +121,26 @@ exports.updateProduct = async (req, res) => {
 // Ürün sil
 exports.deleteProduct = async (req, res) => {
   try {
+    const product = await Product.getById(req.params.id);
+    const categorySlug = product.category_slug;
+
     await Product.delete(req.params.id);
+
+    // Kalan ürünlere bak
+    const [remainingProducts] = await db.query(
+      "SELECT image_url FROM products WHERE category_slug = ? LIMIT 1",
+      [categorySlug]
+    );
+
+    if (remainingProducts.length > 0) {
+      await Category.updateImageUrl(
+        categorySlug,
+        remainingProducts[0].image_url
+      );
+    } else {
+      await Category.updateImageUrl(categorySlug, null);
+    }
+
     res.json({ message: "Ürün silindi" });
   } catch (error) {
     res.status(500).json({ message: "Ürün silinemedi", error });

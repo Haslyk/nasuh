@@ -132,7 +132,9 @@ export function Header() {
               İletişim
             </Link>
             <Button className="bg-[#0F3460] hover:bg-blue-700 text-white rounded-full px-6 shadow-lg shadow-blue-900/20">
-              Teklif Alın
+              <Link href={"/contact"} className="flex items-center gap-2">
+                Teklif Alın
+              </Link>
             </Button>
           </div>
 

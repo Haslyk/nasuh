@@ -53,7 +53,7 @@ export default function CategoryPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {data.products.map((product) => (
             <Link
-              key={product._id}
+              key={product.id}
               href={`/products/${categorySlug}/${product.slug}`}
               className="border rounded-lg overflow-hidden group"
             >
