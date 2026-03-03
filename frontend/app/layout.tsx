@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Space_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { LayoutWrapper } from "@/components/layout-wrapper";
 import "./globals.css";

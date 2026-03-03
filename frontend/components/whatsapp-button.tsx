@@ -3,9 +3,12 @@
 import { useEffect, useState } from "react";
 import { MessageCircle } from "lucide-react";
 import { API_BASE_URL } from "@/lib/constants";
+import { usePathname } from "next/navigation";
 
 export default function WhatsappButton() {
   const [phone, setPhone] = useState("");
+  const pathname = usePathname();
+  const isAdminPage = pathname?.startsWith("/admin");
 
   useEffect(() => {
     fetch(`${API_BASE_URL}/settings`)
@@ -21,6 +24,8 @@ export default function WhatsappButton() {
   if (!phone) return null;
 
   const whatsappUrl = `https://wa.me/${phone.replace(/\D/g, "")}`;
+
+  if (isAdminPage) return null;
 
   return (
     <a

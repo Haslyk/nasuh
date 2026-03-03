@@ -46,13 +46,23 @@ export default function AdminLayout({
   const pathname = usePathname();
   const router = useRouter();
 
+  useEffect(() => {
+    const token = localStorage.getItem("adminToken");
+
+    if (!token) {
+      router.replace("/login");
+    } else {
+      router.replace("/admin/dashboard");
+    }
+  }, []);
+
   // Sayfa değiştiğinde mobil menüyü kapat
   useEffect(() => {
     setIsMobileOpen(false);
   }, [pathname]);
 
   const handleLogout = () => {
-    localStorage.removeItem("isAdmin");
+    localStorage.removeItem("adminToken");
     router.push("/login");
   };
 
