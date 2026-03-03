@@ -9,6 +9,12 @@ const Product = {
     const [rows] = await db.query("SELECT * FROM products WHERE id = ?", [id]);
     return rows[0];
   },
+  getBySlug: async (slug) => {
+    const [rows] = await db.query("SELECT * FROM products WHERE slug = ?", [
+      slug,
+    ]);
+    return rows[0];
+  },
   create: async (data) => {
     const query = `
             INSERT INTO products 

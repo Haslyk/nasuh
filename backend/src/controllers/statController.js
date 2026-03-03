@@ -11,6 +11,12 @@ exports.getAllStats = async (req, res) => {
 
 exports.createStat = async (req, res) => {
   try {
+    const stats = await Stat.getAll();
+    if (stats.length >= 5) {
+      return res
+        .status(400)
+        .json({ message: "Maksimum 5 istatistik ekleyebilirsiniz." });
+    }
     await Stat.create(req.body);
     res.status(201).json({ message: "İstatistik eklendi" });
   } catch (error) {
@@ -29,6 +35,14 @@ exports.updateStat = async (req, res) => {
 
 exports.deleteStat = async (req, res) => {
   try {
+    const stats = await Stat.getAll();
+    if (stats.length <= 3) {
+      return res
+        .status(400)
+        .json({
+          message: "En az 3 istatistik bulunmalıdır. Daha fazla silemezsiniz.",
+        });
+    }
     await Stat.delete(req.params.id);
     res.json({ message: "İstatistik silindi" });
   } catch (error) {

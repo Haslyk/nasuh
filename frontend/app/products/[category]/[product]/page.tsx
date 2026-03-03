@@ -1,136 +1,121 @@
-import type { Metadata } from "next";
+"use client";
+
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import Image from "next/image";
+import { API_BASE_URL, UPLOADS_URL } from "@/lib/constants";
+import { Loader2, ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
-import { products, featuredCategories } from "@/data/content";
-import { PageHero } from "@/components/page-hero";
-import { ArrowRight } from "lucide-react";
 
-interface Props {
-  params: Promise<{ category: string; product: string }>;
-}
+export default function ProductDetailPage() {
+  const params = useParams();
+  const [product, setProduct] = useState<any>(null);
+  const [categoryName, setCategoryName] = useState("");
+  const [loading, setLoading] = useState(true);
 
-export async function generateStaticParams() {
-  return products.map((p) => ({
-    category: p.categorySlug,
-    product: p.slug,
-  }));
-}
+  useEffect(() => {
+    const fetchProductData = async () => {
+      try {
+        // 1. Ürünü çek
+        const prodRes = await fetch(
+          `${API_BASE_URL}/products/detail/${params.product}`
+        );
+        const productData = await prodRes.json();
+        setProduct(productData);
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { product: productSlug } = await params;
-  const product = products.find((p) => p.slug === productSlug);
-  if (!product) return {};
-  return {
-    title: product.name,
-    description: product.shortDescription,
-  };
-}
+        // 2. Kategorileri çekip ürünün kategorisini bul
+        const catRes = await fetch(`${API_BASE_URL}/categories`);
+        const categories = await catRes.json();
+        const foundCat = categories.find(
+          (c: any) => c.slug == productData.category_slug
+        );
+        if (foundCat) setCategoryName(foundCat.name);
+      } catch (err) {
+        console.error("Ürün detayı yüklenemedi:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-export default async function ProductDetailPage({ params }: Props) {
-  const { category, product: productSlug } = await params;
-  const product = products.find(
-    (p) => p.categorySlug === category && p.slug === productSlug
-  );
-  if (!product) notFound();
+    if (params.product) fetchProductData();
+  }, [params.product]);
 
-  const cat = featuredCategories.find((c) => c.slug === category);
+  if (loading)
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <Loader2 className="animate-spin" />
+      </div>
+    );
+  if (!product)
+    return <div className="text-center py-20 font-bold">Ürün bulunamadı.</div>;
 
   return (
-    <>
-      <PageHero
-        title={product.name}
-        breadcrumbs={[
-          { label: "Ana Sayfa", href: "/" },
-          { label: "Urunler", href: "/products" },
-          { label: cat?.title ?? product.category, href: `/products/${category}` },
-          { label: product.name },
-        ]}
-      />
+    <div className="min-h-screen bg-white pb-20">
+      {/* Üst Navigasyon Çubuğu */}
+      <div className="bg-slate-50 border-b py-4 mb-12">
+        <div className="container mx-auto px-6 flex items-center gap-4">
+          <Link
+            href="/products"
+            className="text-slate-400 hover:text-blue-600 transition-colors"
+          >
+            <ArrowLeft size={20} />
+          </Link>
+          <span className="text-xs font-black uppercase tracking-widest text-slate-400">
+            Ürünler / {categoryName} / {product.name}
+          </span>
+        </div>
+      </div>
 
-      <section className="py-20 bg-card">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
-            {/* Gallery */}
-            <div className="flex flex-col gap-4">
-              <div className="relative aspect-[4/3] overflow-hidden rounded-lg border border-border">
-                <Image
-                  src={product.image}
-                  alt={product.name}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  priority
-                />
-              </div>
-              {product.gallery.length > 1 && (
-                <div className="grid grid-cols-3 gap-3">
-                  {product.gallery.map((img, i) => (
-                    <div
-                      key={i}
-                      className="relative aspect-[4/3] overflow-hidden rounded-md border border-border"
-                    >
-                      <Image
-                        src={img}
-                        alt={`${product.name} - Gorsel ${i + 1}`}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 1024px) 33vw, 16vw"
-                      />
-                    </div>
-                  ))}
-                </div>
-              )}
+      <div className="container mx-auto px-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+          {/* Ürün Görseli */}
+          <div className="relative aspect-square rounded-[3rem] overflow-hidden bg-slate-100 shadow-2xl">
+            <Image
+              src={`${UPLOADS_URL}${product?.image_url}`}
+              alt={product.name}
+              fill
+              className="object-cover"
+            />
+          </div>
+
+          {/* Ürün Bilgileri */}
+          <div className="flex flex-col space-y-8 justify-center">
+            <div className="space-y-4">
+              <span className="px-4 py-1.5 bg-blue-50 text-blue-600 text-xs font-black uppercase tracking-[0.2em] rounded-full">
+                {categoryName}
+              </span>
+              <h1 className="text-4xl lg:text-6xl font-black text-slate-900 leading-tight tracking-tighter uppercase">
+                {product.name}
+              </h1>
             </div>
 
-            {/* Details */}
-            <div>
-              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-secondary mb-2 block">
-                {product.category}
-              </span>
-              <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
-                {product.name}
-              </h2>
-              <p className="text-muted-foreground leading-relaxed text-lg mb-8">
-                {product.description}
-              </p>
+            {/* Kısa Açıklama */}
+            <p className="text-xl text-slate-600 font-semibold italic border-l-4 border-blue-600 pl-6 leading-relaxed">
+              {product.description}
+            </p>
 
-              {/* Specs table */}
-              <div className="rounded-lg border border-border overflow-hidden">
-                <div className="bg-muted px-6 py-3">
-                  <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider">
-                    Teknik Ozellikler
-                  </h3>
-                </div>
-                <div className="divide-y divide-border">
-                  {product.specs.map((spec) => (
-                    <div
-                      key={spec.label}
-                      className="flex items-center justify-between px-6 py-3.5"
-                    >
-                      <span className="text-sm text-muted-foreground">
-                        {spec.label}
-                      </span>
-                      <span className="text-sm font-medium text-foreground">
-                        {spec.value}
-                      </span>
-                    </div>
-                  ))}
-                </div>
+            {/* Uzun Açıklama (Content) */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-black uppercase tracking-widest text-slate-400">
+                Ürün Hakkında
+              </h3>
+              <div className="text-slate-600 leading-loose whitespace-pre-line text-lg font-medium">
+                {product.content || "Detaylı açıklama bulunmuyor."}
               </div>
+            </div>
 
-              {/* CTA */}
+            {/* Teklif Al Butonu */}
+            <div className="pt-6">
               <Link
-                href="/contact?quote=true"
-                className="mt-8 inline-flex items-center gap-2 rounded-md bg-secondary px-7 py-3.5 text-sm font-semibold text-secondary-foreground shadow-sm hover:opacity-90 transition-opacity"
+                href="/contact"
+                className="inline-block bg-[#0F3460] text-white px-10 py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-blue-700 transition-all shadow-xl shadow-blue-900/20"
               >
-                Bu Urun Icin Teklif Alin
-                <ArrowRight className="h-4 w-4" />
+                Fiyat Teklifi Al
               </Link>
             </div>
           </div>
         </div>
-      </section>
-    </>
+      </div>
+    </div>
   );
 }

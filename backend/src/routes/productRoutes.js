@@ -3,6 +3,7 @@ const router = express.Router();
 const productController = require("../controllers/productController");
 
 router.get("/", productController.getAllProducts);
+router.get("/detail/:slug", productController.getProductBySlug);
 router.post(
   "/",
   productController.uploadImage,

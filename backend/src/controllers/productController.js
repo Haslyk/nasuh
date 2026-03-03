@@ -26,6 +26,20 @@ exports.getAllProducts = async (req, res) => {
   }
 };
 
+exports.getProductBySlug = async (req, res) => {
+  try {
+    const slug = req.params.slug;
+    const product = await Product.getBySlug(slug);
+
+    if (!product) {
+      return res.status(404).json({ message: "Ürün bulunamadı" });
+    }
+    res.json(product);
+  } catch (error) {
+    res.status(500).json({ message: "Ürün detayı getirilemedi" });
+  }
+};
+
 // Yeni ürün ekle
 exports.createProduct = async (req, res) => {
   try {

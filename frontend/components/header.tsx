@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 export function Header() {
   const [settings, setSettings] = useState<any>(null);
   const [categories, setCategories] = useState<any[]>([]);
+  const [products, setProducts] = useState<any[]>([]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -19,10 +20,15 @@ export function Header() {
       .then((data) => setSettings(data))
       .catch((err) => console.error("Ayarlar çekilemedi", err));
 
-    fetch(`${API_BASE_URL}/categories`)
-      .then((res) => res.json())
-      .then((data) => setCategories(data))
-      .catch((err) => console.error("Kategoriler çekilemedi", err));
+    Promise.all([
+      fetch(`${API_BASE_URL}/categories`).then((res) => res.json()),
+      fetch(`${API_BASE_URL}/products`).then((res) => res.json()),
+    ]).then(([catData, prodData]) => {
+      const activeCategories = catData.filter((cat: any) =>
+        prodData.some((prod: any) => prod.category_slug === cat.slug)
+      );
+      setCategories(activeCategories);
+    });
 
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
