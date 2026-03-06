@@ -46,7 +46,7 @@ export function Header() {
         isScrolled ? "shadow-lg" : ""
       )}
     >
-      {!isScrolled && (
+      {(!isScrolled && (settings?.phone && settings?.email && settings?.tagline)) &&  (
         <div className="bg-[#0F3460] text-white py-2 hidden md:block border-b border-white/10">
           <div className="container mx-auto px-4 flex justify-between items-center text-xs font-medium uppercase tracking-widest">
             <div className="flex gap-6">
@@ -54,16 +54,16 @@ export function Header() {
                 href={`tel:${settings?.phone}`}
                 className="flex items-center gap-2 hover:text-blue-300 transition-colors"
               >
-                <Phone size={14} /> {settings?.phone || "Yükleniyor..."}
+                <Phone size={14} /> {settings?.phone || "Bilgi yok"}
               </a>
               <a
                 href={`mailto:${settings?.email}`}
                 className="flex items-center gap-2 hover:text-blue-300 transition-colors"
               >
-                <Mail size={14} /> {settings?.email || "Yükleniyor..."}
+                <Mail size={14} /> {settings?.email || "Bilgi yok"}
               </a>
             </div>
-            <div>{settings?.tagline || "Mühendislikte Güven ve Kalite"}</div>
+            <div>{settings?.tagline || "Güven ve Kalite"}</div>
           </div>
         </div>
       )}

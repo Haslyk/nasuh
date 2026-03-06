@@ -28,6 +28,5 @@ class AppServiceProvider extends ServiceProvider
         Product::observe(ImageCleanupObserver::class);
         Slider::observe(ImageCleanupObserver::class);
         Partner::observe(ImageCleanupObserver::class);
-        Category::observe(ImageCleanupObserver::class);
     }
 }

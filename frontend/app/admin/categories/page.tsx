@@ -97,6 +97,8 @@ export default function CategoriesPage() {
         setOpen(false);
         resetForm();
         fetchCategories();
+      } else {
+        toast.error("İşlem başarısız.");
       }
     } catch (error) {
       toast.error("İşlem başarısız.");

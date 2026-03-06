@@ -20,5 +20,10 @@ class Category extends Model
                 $model->id = (string) Str::uuid();
             }
         });
+
+        static::deleting(function ($category) {
+            \App\Models\Product::where('category_slug', $category->slug)
+                ->update(['category_slug' => null]);
+        });
     }
 }

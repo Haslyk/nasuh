@@ -55,6 +55,15 @@ class CategoryController extends Controller
                 return response()->json(['message' => 'Kategori bulunamadı'], 404);
             }
 
+            $newSlug = Str::slug($request->name);
+            $exists = Category::where('slug', $newSlug)->where('id', '!=', $id)->exists();
+
+            if ($exists) {
+                return response()->json([
+                    'message' => 'Bu isimde bir kategori zaten mevcut. Lütfen farklı bir isim deneyin.'
+                ], 422);
+            }
+
             $category->name = $request->name;
             $category->description = $request->description;
             $category->slug = Str::slug($request->name);
