@@ -75,7 +75,7 @@ export default function DynamicCorporatePage() {
 
             <div className="flex flex-col">
               <span className="text-xs font-black uppercase tracking-[0.2em] text-blue-600 mb-4 block">
-                {data.subtitle || "Nasuh Makine Mühendislik"}
+                {data.subtitle || "Nasuh Ambalaj & Kağıt"}
               </span>
               <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-8 uppercase tracking-tighter">
                 {data.title}

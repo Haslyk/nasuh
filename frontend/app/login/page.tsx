@@ -22,7 +22,6 @@ export default function LoginPage() {
     try {
       const data = await login(username, password);
       if (data.token) {
-        localStorage.setItem("adminToken", data.token);
         toast.success("Giriş başarılı!");
         router.push("/admin");
       } else {

@@ -124,7 +124,7 @@ export default function SliderPage() {
       ? `${API_BASE_URL}/sliders/${editingSlider.id}`
       : `${API_BASE_URL}/sliders`;
 
-    const method = editingSlider ? "PUT" : "POST";
+    const method = "POST";
 
     try {
       const res = await fetch(url, { method, body: data });

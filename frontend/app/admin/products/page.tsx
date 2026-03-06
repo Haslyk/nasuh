@@ -144,7 +144,7 @@ export default function ProductsPage() {
       ? `${API_BASE_URL}/products/${editingProduct.id}`
       : `${API_BASE_URL}/products`;
 
-    const method = editingProduct ? "PUT" : "POST";
+    const method =  "POST";
 
     try {
       const res = await fetch(url, { method, body: data });

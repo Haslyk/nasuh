@@ -56,7 +56,7 @@ export function FeaturedProducts() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {categories.slice(0, 3).map((category) => (
             <Link
-              href={`/products/${category.id}`}
+              href={`/products/${category.slug}`}
               key={category.id}
               className="group relative h-[450px] rounded-[3rem] overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500"
             >

@@ -80,7 +80,7 @@ export default function SettingsPage() {
             <div className="space-y-2">
               <Label>Şirket Adı</Label>
               <Input
-                value={settings.company_name}
+                value={settings.company_name || ""}
                 onChange={(e) =>
                   setSettings({ ...settings, company_name: e.target.value })
                 }
@@ -89,7 +89,7 @@ export default function SettingsPage() {
             <div className="space-y-2">
               <Label>Slogan</Label>
               <Input
-                value={settings.tagline}
+                value={settings.tagline || ""}
                 onChange={(e) =>
                   setSettings({ ...settings, tagline: e.target.value })
                 }
@@ -109,7 +109,7 @@ export default function SettingsPage() {
             <div className="space-y-2">
               <Label>E-Posta</Label>
               <Input
-                value={settings.email}
+                value={settings.email || ""}
                 onChange={(e) =>
                   setSettings({ ...settings, email: e.target.value })
                 }
@@ -118,7 +118,7 @@ export default function SettingsPage() {
             <div className="space-y-2">
               <Label>Telefon</Label>
               <Input
-                value={settings.phone}
+                value={settings.phone || ""}
                 onChange={(e) =>
                   setSettings({ ...settings, phone: e.target.value })
                 }
@@ -134,7 +134,7 @@ export default function SettingsPage() {
           </CardHeader>
           <CardContent className="grid grid-cols-1 gap-4">
             <Textarea
-              value={settings.address}
+              value={settings.address || ""}
               onChange={(e) =>
                 setSettings({ ...settings, address: e.target.value })
               }
@@ -154,7 +154,7 @@ export default function SettingsPage() {
             <div className="space-y-2">
               <Label>Instagram URL</Label>
               <Input
-                value={settings.instagram}
+                value={settings.instagram || ""}
                 onChange={(e) =>
                   setSettings({ ...settings, instagram: e.target.value })
                 }
@@ -163,7 +163,7 @@ export default function SettingsPage() {
             <div className="space-y-2">
               <Label>LinkedIn URL</Label>
               <Input
-                value={settings.linkedin}
+                value={settings.linkedin || ""}
                 onChange={(e) =>
                   setSettings({ ...settings, linkedin: e.target.value })
                 }
@@ -172,7 +172,7 @@ export default function SettingsPage() {
             <div className="space-y-2">
               <Label>YouTube URL</Label>
               <Input
-                value={settings.youtube}
+                value={settings.youtube || ""}
                 onChange={(e) =>
                   setSettings({ ...settings, youtube: e.target.value })
                 }

@@ -36,9 +36,7 @@ export function Footer() {
 
   return (
     <footer
-      className={`${
-        settings.font_family || "font-sans"
-      } bg-slate-900 text-white pt-20 pb-10`}
+      className={`bg-slate-900 text-white pt-20 pb-10`}
     >
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">

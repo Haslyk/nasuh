@@ -16,9 +16,8 @@ export default function PrivacyPage() {
           <div className="prose prose-slate max-w-none">
             <h2 className="text-2xl font-bold mb-6">Aydınlatma Metni</h2>
             <p className="text-slate-600 leading-relaxed mb-4">
-              Nasuh Makine olarak kişisel verilerinizin güvenliği hususuna azami
-              hassasiyet göstermekteyiz... (Buraya standart KVKK metninizi
-              ekleyebilirsiniz)
+              Nasuh Ambalaj & Kağıt olarak kişisel verilerinizin güvenliği
+              hususuna azami hassasiyet göstermekteyiz...
             </p>
           </div>
         </div>
